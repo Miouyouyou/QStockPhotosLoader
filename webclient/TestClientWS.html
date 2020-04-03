@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pouip</title>
+	<meta charset="utf8" />
+	<style>
+	body { 
+		display: grid;
+		grid-template-areas:
+			"logs"
+			"controls";
+		grid-template-rows:
+			minmax(48px, calc(100vh - 48px)) 48px;
+	}
+	#wss_logs { grid-area: logs; }
+	#wss_controls { grid-area: controls; }
+
+	#wss_logs { background-color: white; }
+	#wss_controls {
+		display: grid;
+		background-color: lightgray;
+		grid-template-areas:
+			"message bouton_envoi adresse bouton_connexion";
+	}
+
+	#text_message { grid-area: message; }
+	#button_message_send { grid-area: bouton_envoi; }
+	#text_address { grid-area: adresse; }
+	#button_connect { grid-area: bouton_connexion; }
+	#button_disconnect { grid-area: bouton_connexion; }
+	#wss_log_error { color: darkred; }
+	#wss_log_warning { color: darkorange; }
+	#wss_log_verbose { color: black; }
+	#wss_log_debug { color: darkblue; }
+	
+	.element_shown { display: initial; }
+	.element_hidden { display: none; }
+	</style>
+</head>
+<body>
+	<div id="wss_logs"></div>
+	<div id="wss_controls"><input id="text_message" type="text"></input><input id="button_message_send" type="button" value="Envoyer"></input><input id="text_address" type="text"></input><input id="button_connect" type="button" value="Connexion"></input><input id="button_disconnect" type="button" value="Déconnexion"></input></div>
+	<script type="text/javascript">
+		const log_error   = 0;
+		const log_warning = 1;
+		const log_verbose = 2;
+		const log_debug   = 3;
+
+		const log_severities_classes = [
+			"wss_error",
+			"wss_warning",
+			"wss_verbose",
+			"wss_debug"
+		];
+
+		const log_area = document.querySelector("#wss_logs");
+		function add_log_entry(message) {
+			var entry = document.createElement("li");
+			var severity = log_verbose;
+			if (typeof(arguments[1]) === "number") {
+				severity = (arguments[1] & 3);
+			}
+			entry.classList.add(log_severities_classes[severity]);
+			entry.textContent = message;
+			log_area.append(entry);
+		}
+
+		function element_show(element) {
+			element.classList.remove("element_hidden");
+			element.classList.add("element_shown");
+		}
+
+		function element_hide(element) {
+			element.classList.remove("element_shown");
+			element.classList.add("element_hidden");
+		}
+
+		function element_disable(element) {
+			element.disabled = true;
+		}
+
+		function element_enable(element) {
+			element.disabled = false;
+		}
+
+		function ui_connect_mode() {
+			element_disable(text_message);
+			element_disable(button_message_send);
+			element_disable(button_disconnect);
+			element_hide(button_disconnect);
+			element_show(button_connect);
+			element_enable(button_connect);
+			element_enable(text_address);
+		}
+
+		function ui_disconnect_mode() {
+			element_disable(button_connect);
+			element_disable(text_address);
+			element_hide(button_connect);
+			element_show(button_disconnect);
+			element_enable(button_disconnect);
+			element_enable(text_message);
+			element_enable(button_message_send);
+		}
+
+		function send_message(connection) {
+			const message = text_message.value;
+			connection.send(message);
+			text_message.value = "";
+			add_log_entry("-> " + message);
+			text_message.focus();
+		}
+
+		function open_connection() {
+			const wsc = new WebSocket("ws://" + text_address.value);
+			const send_func = function() {
+				send_message(wsc);
+			};
+			element_disable(button_connect);
+			wsc.onopen = function (event) {
+				const message = "Meow meow meow";
+				add_log_entry("Connected to localhost:80");
+				wsc.send(message);
+				add_log_entry("-> " + message);
+				button_disconnect.addEventListener("click", (e) => {
+					wsc.close();
+					ui_connect_mode();
+					button_message_send.removeEventListener("click", send_func);
+				});
+				ui_disconnect_mode();
+				button_message_send.addEventListener("click", send_func);
+			};
+			wsc.onmessage = function (event) {
+				const message = event.data;
+				add_log_entry("<- " + message);
+			};
+			wsc.onerror = function(event, err) {
+				butotn_message_send.removeEventListener("click", send_func);
+				add_log_entry("Something wrong happened :C", log_error);
+				wsc.close();
+				ui_connect_mode();
+				button_message_send.removeEventListener("click", send_func);
+			};
+
+		}
+
+		ui_connect_mode();
+		button_connect.addEventListener("click", open_connection);
+		text_message.addEventListener("keyup", e => {
+			if (e.isComposing || e.keyCode === 229) {
+				return;
+			}
+			if (e.code === 'Enter') {
+				button_message_send.click();
+			}
+			
+		});
+	</script>
+</body>
+</html>
