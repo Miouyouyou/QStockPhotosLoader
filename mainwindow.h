@@ -5,6 +5,9 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include "QtWebSockets/QWebSocket"
 #include "QtWebSockets/QWebSocketServer"
+#include "QListWidgetItem"
+
+#include "QJsonDocument"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,11 +31,13 @@ private slots:
     void wss_client_sent_binary_data(QByteArray data);
     void settings_save();
     void settings_load();
+    void test_item_click(QListWidgetItem *);
 
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager nm;
     QWebSocketServer * wss;
     QList<QWebSocket *> clients_list;
+    QJsonDocument pixabay_response;
 };
 #endif // MAINWINDOW_H

@@ -12,6 +12,9 @@
 #include "QSettings"
 #include "QApplication"
 #include "QStandardPaths"
+#include "QJsonArray"
+#include "QJsonDocument"
+#include "QJsonObject"
 
 #define LOG(fmt, ...) \
     fprintf(stderr, "[%s:%s:%d] " fmt "\n", __FILE__, __func__, __LINE__, ##__VA_ARGS__)
@@ -77,10 +80,26 @@ void MainWindow::settings_load() {
     ui->textClefAPI->setText(key);
 }
 
+
+
 void MainWindow::pixabay_reply(QNetworkReply * const reply) {
     LOG("Reply : %p", reply);
     auto content = reply->readAll();
     LOG("response : %s", content.data());
+    QJsonDocument const json = QJsonDocument::fromJson(content);
+    QJsonArray hits = json["hits"].toArray();
+    int const n_hits = hits.count();
+    for (int i = 0; i < n_hits; i++) {
+        QJsonObject const hit = hits[i].toObject();
+        ui->listeResultats->addItem(hit["pageURL"].toString());
+    }
+    pixabay_response = json;
+    connect(ui->listeResultats, &QListWidget::itemClicked, this, &MainWindow::test_item_click);
+}
+
+void MainWindow::test_item_click(QListWidgetItem * const item)
+{
+    LOG("Clicked on : %s", item->text().toUtf8().data());
 }
 
 void MainWindow::on_boutonRecherche_clicked()

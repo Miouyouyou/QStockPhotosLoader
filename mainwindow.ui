@@ -28,7 +28,7 @@
       <widget class="QLineEdit" name="textClefAPI"/>
      </item>
      <item>
-      <widget class="QListView" name="listeResultats"/>
+      <widget class="QListWidget" name="listeResultats"/>
      </item>
      <item>
       <widget class="QFrame" name="frame">
