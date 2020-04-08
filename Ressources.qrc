@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/test">
+        <file alias="pixabay_test_response">test_data.json</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="photo_test_icon">Pixelmator-icon.png</file>
+    </qresource>
+</RCC>

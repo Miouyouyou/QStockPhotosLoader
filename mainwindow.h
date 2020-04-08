@@ -31,11 +31,25 @@ private slots:
     void wss_client_sent_binary_data(QByteArray data);
     void settings_save();
     void settings_load();
+    // Test
     void test_item_click(QListWidgetItem *);
+    void pixabay_test_results_from(QString file);
+    void pixabay_display_results(QJsonDocument json);
+    void image_download_finished(QNetworkReply *);
+
 
 private:
+    struct Nem {
+        QNetworkAccessManager * nm;
+        void * user_data;
+    };
+    void nems_prepare(
+        QList<Nem> &nems,
+        QString const &url,
+        void * __restrict const user_data);
     Ui::MainWindow *ui;
     QNetworkAccessManager nm;
+    QList<Nem> images_nems;
     QWebSocketServer * wss;
     QList<QWebSocket *> clients_list;
     QJsonDocument pixabay_response;

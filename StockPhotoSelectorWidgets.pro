@@ -17,13 +17,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    searchresult.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    searchresult.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    searchresult.ui
 
 TRANSLATIONS += \
     StockPhotoSelectorWidgets_fr_FR.ts
@@ -32,3 +35,9 @@ TRANSLATIONS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    test_data.json
+
+RESOURCES += \
+    Ressources.qrc

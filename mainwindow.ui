@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1090</width>
     <height>600</height>
    </rect>
   </property>
@@ -28,7 +28,20 @@
       <widget class="QLineEdit" name="textClefAPI"/>
      </item>
      <item>
-      <widget class="QListWidget" name="listeResultats"/>
+      <widget class="QListWidget" name="listeResultats">
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="uniformItemSizes">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QFrame" name="frame">
@@ -95,13 +108,32 @@
      </item>
     </layout>
    </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>799</x>
+      <y>-1</y>
+      <width>291</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1090</width>
      <height>30</height>
     </rect>
    </property>
